@@ -2,31 +2,138 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Login</title>
+  <title>Login | Exam Platform</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: linear-gradient(135deg, #eef2ff, #f8fafc);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 380px;
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin: 0 0 6px;
+      text-align: center;
+      font-size: 22px;
+      color: #111827;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 22px;
+    }
+
+    label {
+      font-size: 13px;
+      color: #374151;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #6366f1;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: #4f46e5;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .primary:hover {
+      background: #4338ca;
+    }
+
+    .link {
+      text-align: center;
+      font-size: 13px;
+      color: #4f46e5;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .secondary {
+      margin-top: 18px;
+      background: #f1f5f9;
+      color: #111827;
+    }
+
+    .secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .message {
+      margin-top: 14px;
+      font-size: 13px;
+      text-align: center;
+      color: #dc2626;
+    }
+
+    .success {
+      color: #16a34a;
+    }
+  </style>
 </head>
+<body>
 
-<body style="font-family:Arial;background:#f4f6fb;height:100vh;display:flex;align-items:center;justify-content:center">
+<div class="card">
+  <h2>Welcome Back</h2>
+  <div class="subtitle">Login to continue your preparation</div>
 
-<div style="background:#fff;padding:25px;width:320px;border-radius:10px">
-  <h2>Login</h2>
+  <label>Email</label>
+  <input type="email" id="email" placeholder="you@example.com">
 
-  <input id="email" type="email" placeholder="Email"
-    style="width:100%;padding:10px;margin-bottom:10px">
+  <label>Password</label>
+  <input type="password" id="password" placeholder="••••••••">
 
-  <input id="password" type="password" placeholder="Password"
-    style="width:100%;padding:10px;margin-bottom:15px">
+  <button class="primary" id="loginBtn">Login</button>
 
-  <button id="loginBtn" style="width:100%;padding:10px;margin-bottom:10px">
-    Login
+  <div class="link" id="forgotBtn">Forgot password?</div>
+
+  <button class="secondary"
+    onclick="window.location.href='signup.html'">
+    New user? Create account
   </button>
 
-  <button onclick="window.location.href='signup.html'"
-    style="width:100%;padding:10px">
-    New user? Sign up
-  </button>
-
-  <p id="msg" style="color:red;margin-top:10px"></p>
+  <div id="msg" class="message"></div>
 </div>
 
 <!-- Firebase -->
@@ -35,35 +142,56 @@
 
 <script>
   const firebaseConfig = {
-    apiKey: "AIzaSyAQk0dJayCyv8gfDGsYW-XSYC5n13oWvpA",
-    authDomain: "ssc-journey.firebaseapp.com",
-    projectId: "ssc-journey"
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID"
   };
 
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
 
+  const msg = document.getElementById("msg");
+
+  function showMsg(text, ok=false) {
+    msg.textContent = text;
+    msg.className = "message " + (ok ? "success" : "");
+  }
+
   function friendlyError(err) {
     switch (err.code) {
       case "auth/user-not-found":
       case "auth/wrong-password":
-        return "Invalid email or password";
+        return "Invalid email or password.";
       case "auth/invalid-email":
-        return "Enter a valid email";
+        return "Please enter a valid email.";
       default:
         return "Login failed. Try again.";
     }
   }
 
   document.getElementById("loginBtn").onclick = () => {
-    const email = document.getElementById("email").value;
-    const pass = document.getElementById("password").value;
+    showMsg("");
+    auth.signInWithEmailAndPassword(
+      email.value, password.value
+    ).then(() => {
+      window.location.href = "/";
+    }).catch(err => {
+      console.error(err);
+      showMsg(friendlyError(err));
+    });
+  };
 
-    auth.signInWithEmailAndPassword(email, pass)
-      .then(() => window.location.href = "/")
+  document.getElementById("forgotBtn").onclick = () => {
+    if (!email.value) {
+      showMsg("Enter your email to reset password.");
+      return;
+    }
+
+    auth.sendPasswordResetEmail(email.value)
+      .then(() => showMsg("Reset link sent to your email.", true))
       .catch(err => {
         console.error(err);
-        msg.innerText = friendlyError(err);
+        showMsg("Unable to send reset email.");
       });
   };
 </script>
