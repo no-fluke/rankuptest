@@ -2,106 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Login | Exam Quiz Platform</title>
+  <title>Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6fb;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .card {
-      background: #ffffff;
-      width: 330px;
-      padding: 24px;
-      border-radius: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-
-    h2 {
-      margin-top: 0;
-      text-align: center;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 12px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-
-    button {
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .login-btn {
-      background: #2563eb;
-      color: white;
-      margin-bottom: 10px;
-    }
-
-    .signup-btn {
-      background: #16a34a;
-      color: white;
-      margin-bottom: 10px;
-    }
-
-    .link {
-      text-align: center;
-      font-size: 13px;
-      color: #2563eb;
-      cursor: pointer;
-      margin-top: 6px;
-    }
-
-    .message {
-      text-align: center;
-      font-size: 13px;
-      margin-top: 10px;
-      color: #dc2626;
-    }
-
-    .success {
-      color: #16a34a;
-    }
-  </style>
 </head>
-<body>
 
-<div class="card">
+<body style="font-family:Arial;background:#f4f6fb;height:100vh;display:flex;align-items:center;justify-content:center">
+
+<div style="background:#fff;padding:25px;width:320px;border-radius:10px">
   <h2>Login</h2>
 
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
+  <input id="email" type="email" placeholder="Email"
+    style="width:100%;padding:10px;margin-bottom:10px">
 
-  <button class="login-btn" id="loginBtn">Login</button>
-  <button class="signup-btn" id="signupBtn">New User? Sign Up</button>
+  <input id="password" type="password" placeholder="Password"
+    style="width:100%;padding:10px;margin-bottom:15px">
 
-  <div class="link" id="forgotBtn">Forgot password?</div>
+  <button id="loginBtn" style="width:100%;padding:10px;margin-bottom:10px">
+    Login
+  </button>
 
-  <div id="msg" class="message"></div>
+  <button onclick="window.location.href='signup.html'"
+    style="width:100%;padding:10px">
+    New user? Sign up
+  </button>
+
+  <p id="msg" style="color:red;margin-top:10px"></p>
 </div>
 
-<!-- Firebase SDK -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
-  /* 🔥 REPLACE WITH YOUR FIREBASE CONFIG */
   const firebaseConfig = {
     apiKey: "AIzaSyAQk0dJayCyv8gfDGsYW-XSYC5n13oWvpA",
     authDomain: "ssc-journey.firebaseapp.com",
@@ -111,78 +43,27 @@
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
 
-  const emailInput = document.getElementById("email");
-  const passInput = document.getElementById("password");
-  const msg = document.getElementById("msg");
-
-  function showMessage(text, success = false) {
-    msg.textContent = text;
-    msg.className = "message " + (success ? "success" : "");
-  }
-
-  function friendlyError(error) {
-    switch (error.code) {
-      case "auth/email-already-in-use":
-        return "Email already registered. Please login.";
-      case "auth/invalid-email":
-        return "Please enter a valid email address.";
-      case "auth/weak-password":
-        return "Password must be at least 6 characters.";
+  function friendlyError(err) {
+    switch (err.code) {
       case "auth/user-not-found":
       case "auth/wrong-password":
-        return "Invalid email or password.";
-      case "auth/network-request-failed":
-        return "Network error. Check your internet.";
+        return "Invalid email or password";
+      case "auth/invalid-email":
+        return "Enter a valid email";
       default:
-        return "Something went wrong. Try again.";
+        return "Login failed. Try again.";
     }
   }
 
-  /* LOGIN */
   document.getElementById("loginBtn").onclick = () => {
-    showMessage("");
-    auth.signInWithEmailAndPassword(
-      emailInput.value,
-      passInput.value
-    ).then(() => {
-      window.location.href = "/";
-    }).catch(err => {
-      console.error(err);
-      showMessage(friendlyError(err));
-    });
-  };
+    const email = document.getElementById("email").value;
+    const pass = document.getElementById("password").value;
 
-  /* SIGNUP */
-  document.getElementById("signupBtn").onclick = () => {
-    showMessage("");
-    auth.createUserWithEmailAndPassword(
-      emailInput.value,
-      passInput.value
-    ).then(() => {
-      window.location.href = "/";
-    }).catch(err => {
-      console.error(err);
-      showMessage(friendlyError(err));
-    });
-  };
-
-  /* FORGOT PASSWORD */
-  document.getElementById("forgotBtn").onclick = () => {
-    if (!emailInput.value) {
-      showMessage("Enter your email to reset password.");
-      return;
-    }
-
-    auth.sendPasswordResetEmail(emailInput.value)
-      .then(() => {
-        showMessage(
-          "Password reset link sent to your email.",
-          true
-        );
-      })
+    auth.signInWithEmailAndPassword(email, pass)
+      .then(() => window.location.href = "/")
       .catch(err => {
         console.error(err);
-        showMessage(friendlyError(err));
+        msg.innerText = friendlyError(err);
       });
   };
 </script>
