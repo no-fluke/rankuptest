@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body style="font-family:Arial;background:#f4f6fb;height:100vh;display:flex;align-items:center;justify-content:center">
+
+<div style="background:#fff;padding:25px;width:330px;border-radius:10px">
+  <h2>Create Account</h2>
+
+  <input id="name" type="text" placeholder="Full Name"
+    style="width:100%;padding:10px;margin-bottom:10px">
+
+  <input id="email" type="email" placeholder="Email"
+    style="width:100%;padding:10px;margin-bottom:10px">
+
+  <input id="password" type="password" placeholder="Password"
+    style="width:100%;padding:10px;margin-bottom:15px">
+
+  <button id="signupBtn" style="width:100%;padding:10px;margin-bottom:10px">
+    Create Account
+  </button>
+
+  <button onclick="window.location.href='login.html'"
+    style="width:100%;padding:10px">
+    Back to Login
+  </button>
+
+  <p id="msg" style="color:red;margin-top:10px"></p>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAQk0dJayCyv8gfDGsYW-XSYC5n13oWvpA",
+    authDomain: "ssc-journey.firebaseapp.com",
+    projectId: "ssc-journey"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  function friendlyError(err) {
+    switch (err.code) {
+      case "auth/email-already-in-use":
+        return "Email already registered. Please login.";
+      case "auth/invalid-email":
+        return "Enter a valid email address.";
+      case "auth/weak-password":
+        return "Password must be at least 6 characters.";
+      default:
+        return "Signup failed. Try again.";
+    }
+  }
+
+  document.getElementById("signupBtn").onclick = () => {
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value;
+    const pass = document.getElementById("password").value;
+
+    if (!name) {
+      msg.innerText = "Please enter your name";
+      return;
+    }
+
+    auth.createUserWithEmailAndPassword(email, pass)
+      .then(res => {
+        return res.user.updateProfile({
+          displayName: name
+        });
+      })
+      .then(() => {
+        window.location.href = "/";
+      })
+      .catch(err => {
+        console.error(err);
+        msg.innerText = friendlyError(err);
+      });
+  };
+</script>
+
+</body>
+</html>
