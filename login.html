@@ -33,7 +33,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
-  // 🔥 PASTE YOUR FIREBASE CONFIG HERE
+  // 🔥 PUT YOUR REAL FIREBASE CONFIG HERE
   const firebaseConfig = {
     apiKey: "AIzaSyAQk0dJayCyv8gfDGsYW-XSYC5n13oWvpA",
     authDomain: "ssc-journey.firebaseapp.com",
@@ -44,25 +44,31 @@
   const auth = firebase.auth();
 
   function signup() {
-    const email = email.value;
-    const password = password.value;
+    const emailVal = document.getElementById("email").value;
+    const passVal = document.getElementById("password").value;
 
-    auth.createUserWithEmailAndPassword(email, password)
+    auth.createUserWithEmailAndPassword(emailVal, passVal)
       .then(() => {
+        alert("Signup successful");
         window.location.href = "/";
       })
-      .catch(err => msg.innerText = err.message);
+      .catch(err => {
+        document.getElementById("msg").innerText = err.message;
+      });
   }
 
   function login() {
-    const email = email.value;
-    const password = password.value;
+    const emailVal = document.getElementById("email").value;
+    const passVal = document.getElementById("password").value;
 
-    auth.signInWithEmailAndPassword(email, password)
+    auth.signInWithEmailAndPassword(emailVal, passVal)
       .then(() => {
+        alert("Login successful");
         window.location.href = "/";
       })
-      .catch(err => msg.innerText = err.message);
+      .catch(err => {
+        document.getElementById("msg").innerText = err.message;
+      });
   }
 </script>
 
