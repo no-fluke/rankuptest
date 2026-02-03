@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Protected Page</title>
+</head>
+<body>
+
+<header style="display:flex;justify-content:space-between;align-items:center">
+  <h3>Protected Area</h3>
+  <div>
+    <span id="userName"></span>
+    <button id="logoutBtn">Logout</button>
+  </div>
+</header>
+
+<p>If you can see this, login protection works 🎉</p>
+
+<script type="module">
+  import { requireLogin, logoutUser } from "/assets/js/auth.js";
+
+  requireLogin(user => {
+    document.getElementById("userName").innerText =
+      user.displayName || user.email;
+  });
+
+  document.getElementById("logoutBtn").onclick = () => {
+    logoutUser().then(() => {
+      window.location.href = "/login.html";
+    });
+  };
+</script>
+
+</body>
+</html>
