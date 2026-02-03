@@ -1,38 +1,83 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Protected Page</title>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Firebase -->
+  <!-- Firebase (ORDER MATTERS) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-  <!-- Global Auth -->
+  <!-- Global Auth (AFTER Firebase) -->
   <script src="/assets/js/auth.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, Arial;
+      background: #f5f7fb;
+    }
+
+    header {
+      background: #fff;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .logout {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .card {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
+  </style>
 </head>
+
 <body>
 
-<header style="display:flex;justify-content:space-between;align-items:center">
-  <h3>Protected Area</h3>
+<header>
+  <div>🎓 Exam Platform</div>
   <div>
     <span id="userName"></span>
-    <button id="logoutBtn">Logout</button>
+    <button class="logout" id="logoutBtn">Logout</button>
   </div>
 </header>
 
-<p>If you can see this, login protection works 🎉</p>
+<div class="card">
+  <h2>Dashboard</h2>
+  <p>You are logged in. Logout should work now.</p>
+</div>
 
 <script>
+  // Protect page
   requireLogin(user => {
     document.getElementById("userName").innerText =
       user.displayName || user.email;
   });
 
-  document.getElementById("logoutBtn").onclick = () => {
+  // Logout button
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    console.log("Logout button clicked"); // DEBUG
     logoutUser().then(() => {
       window.location.href = "/login.html";
     });
-  };
+  });
 </script>
 
 </body>
