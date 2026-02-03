@@ -1,24 +1,21 @@
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-
-/* 🔥 SAME FIREBASE CONFIG YOU USED BEFORE */
+<script>
+/* 🔥 Firebase App + Auth (COMPAT) */
 const firebaseConfig = {
   apiKey: "AIzaSyAQk0dJayCyv8gfDGsYW-XSYC5n13oWvpA",
   authDomain: "ssc-journey.firebaseapp.com",
   projectId: "ssc-journey"
 };
 
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+/* Initialize only ONCE */
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+const auth = firebase.auth();
 
 /* 🔒 Protect page */
-export function requireLogin(callback) {
-  onAuthStateChanged(auth, user => {
+function requireLogin(callback) {
+  auth.onAuthStateChanged(user => {
     if (!user) {
       window.location.href = "/login.html";
     } else {
@@ -28,7 +25,11 @@ export function requireLogin(callback) {
 }
 
 /* 🚪 Logout */
-export function logoutUser() {
-  return signOut(auth);
+function logoutUser() {
+  return auth.signOut();
 }
+
+/* Expose globally */
+window.requireLogin = requireLogin;
+window.logoutUser = logoutUser;
 </script>
