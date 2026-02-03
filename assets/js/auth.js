@@ -2,9 +2,9 @@
 /* ========= FIREBASE INIT (COMPAT ONLY) ========= */
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID"
+  apiKey: "AIzaSyAQk0dJayCyv8gfDGsYW-XSYC5n13oWvpA",
+  authDomain: "ssc-journey.firebaseapp.com",
+  projectId: "ssc-journey"
 };
 
 if (!firebase.apps.length) {
