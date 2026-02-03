@@ -2,6 +2,13 @@
 <html>
 <head>
   <title>Protected Page</title>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+  <!-- Global Auth -->
+  <script src="/assets/js/auth.js"></script>
 </head>
 <body>
 
@@ -15,9 +22,7 @@
 
 <p>If you can see this, login protection works 🎉</p>
 
-<script type="module">
-  import { requireLogin, logoutUser } from "/assets/js/auth.js";
-
+<script>
   requireLogin(user => {
     document.getElementById("userName").innerText =
       user.displayName || user.email;
