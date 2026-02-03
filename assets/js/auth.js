@@ -1,20 +1,20 @@
 <script>
-/* 🔥 Firebase App + Auth (COMPAT) */
+/* ========= FIREBASE INIT (COMPAT ONLY) ========= */
+
 const firebaseConfig = {
-  apiKey: "AIzaSyAQk0dJayCyv8gfDGsYW-XSYC5n13oWvpA",
-  authDomain: "ssc-journey.firebaseapp.com",
-  projectId: "ssc-journey"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID"
 };
 
-/* Initialize only ONCE */
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
 const auth = firebase.auth();
 
-/* 🔒 Protect page */
-function requireLogin(callback) {
+/* ========= REQUIRE LOGIN ========= */
+window.requireLogin = function (callback) {
   auth.onAuthStateChanged(user => {
     if (!user) {
       window.location.href = "/login.html";
@@ -22,14 +22,11 @@ function requireLogin(callback) {
       callback(user);
     }
   });
-}
+};
 
-/* 🚪 Logout */
-function logoutUser() {
+/* ========= LOGOUT ========= */
+window.logoutUser = function () {
+  console.log("Logout function called"); // DEBUG LINE
   return auth.signOut();
-}
-
-/* Expose globally */
-window.requireLogin = requireLogin;
-window.logoutUser = logoutUser;
+};
 </script>
